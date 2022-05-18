@@ -1,26 +1,25 @@
 ###  Improve performance with weight SVD orthogonalization and BatchNorm bias init to 1
 ####  weight SVD orthogonalization:
-Linear and depthwise conv (1*1) layer can be seen as matrix matmul. When the weights are orthogonal, the correlation of the output units is reduced and the diversity is increased. And when backpropagating, the norm of the gradient will not increase, avoiding explosion or disappearance
+Linear and depthwise conv (1*1) layer can be seen as matrix matmul. When the weights are orthogonal, the correlation of the output filters is reduced and the diversity is increased. And when backpropagating, the norm of the gradient will not increase, avoiding explosion or disappearance
 
 There are parameters orthogonal init ways in pytorch : nn.init.orthogonal_().
 But I find initialing weight orthogonally get worse performance in testing cifar10. Because the orthogonality decreases rapidly after training, even worse than the orthogonality from normal initialization
 
-So I try svd decomposition to force the weights to have to be orthogonalized:
+So I try svd decomposition to force the weights to have to be orthogonalized, like :
 ```
-#weight is depthwise conv layer weight
-weight.requires_grad=False
+weight.requires_grad=False                          # weight is conv layer weight,typically depthwise. reassign its values needs to set requires_grad=False first.
 out_,in_,s1,s2 =weight.shape
-a=weight.reshape((self.groups,-1,(in_*s1*s2))) #self.groups is nn.Conv2D 'groups' param in pytorch
+a=weight.reshape((self.groups,-1,(in_*s1*s2)))      # self.groups is nn.Conv2D 'groups' param in pytorch
 a=a.transpose(1,2)
 u, s, vh = torch.linalg.svd(a, full_matrices=False)
-mat = u @ vh
-if a.shape[2] > a.shape[1]:
-    mat = mat / (torch.linalg.norm(mat, axis=0, keepdims=True).detach() + 1e-10)
+mat = u @ vh                                        # mat is orthogonal matrix from weight
+if a.shape[2] > a.shape[1]:                         # normalize the weights, make the norm of the output the same as the input
+    mat = mat / (torch.linalg.norm(mat, axis=0, keepdims=True).detach() + 1e-10)  
 mat=mat.transpose(1,2)
-weight[:] = mat.reshape((out_,in_,s1,s2))
+weight[:] = mat.reshape((out_,in_,s1,s2))           # reassign values .it becomes orthogonal
 weight.requires_grad=True
 ```
-Note: I reassign weight values at the end of the code. I have tested without assignment, and the effect is not as good as assigning. And there is no need to calculate gradients during backpropagation with value assignment
+Note: I reassign weight values at the end of the code. I have tested without assignment, and the effect is not as good as assigning. And there is no need to calculate gradients of svd operations during backpropagation with value assignment to save training time.
 
 Using this, the effect is basically improved in various situations ,without increasing model inference time (can remove the svd code after training)
 
