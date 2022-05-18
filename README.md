@@ -1,5 +1,5 @@
 ###  Improve performance with weight SVD orthogonalization and BatchNorm bias init to 1
-####weight SVD orthogonalization:
+####  weight SVD orthogonalization:
 Linear and depthwise conv (1*1) layer can be seen as matrix matmul. When the weights are orthogonal, the correlation of the output units is reduced and the diversity is increased. And when backpropagating, the norm of the gradient will not increase, avoiding explosion or disappearance
 
 There are parameters orthogonal init ways in pytorch : nn.init.orthogonal_().
@@ -39,7 +39,7 @@ cifar10 test result:
 
 also I test in a 46cls album multi classification task with efficientnet-b0 in my actual work.The recall improve 3-5% with weight SVD orthogonalization
 
-####BatchNorm bias init to 1:
+####  BatchNorm bias init to 1:
 when I look into many BatchNorm bias values after training.It seems that most of the bias are positive numbers in better accuracy model
 
 I guess because: Usually the layer order is Conv -> BatchNorm -> Relu . 
