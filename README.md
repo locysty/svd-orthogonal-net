@@ -20,7 +20,7 @@ mat=mat.transpose(1,2)
 weight[:] = mat.reshape((out_,in_,s1,s2))
 weight.requires_grad=True
 ```
-Note: I assign weights at the end of the code. I have tested without assign, and the effect is not as good as assign. And there is no need to calculate gradients during backpropagation when assign
+Note: I reassign weight values at the end of the code. I have tested without assignment, and the effect is not as good as assigning. And there is no need to calculate gradients during backpropagation with value assignment
 
 Using this, the effect is basically improved in various situations ,without increasing model inference time (can remove the svd code after training)
 
