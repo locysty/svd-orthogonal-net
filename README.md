@@ -51,4 +51,4 @@ But if the bias is too large, this module will degenerate into a completely line
 
 I've test these with cifar10 ,found bias init to 1 is slightly better compared to 0 or 2,with accuracy improved by 1-2%
 
-here is sample code train with cifar10. run train_tiny_record.py 
+Here is sample train code with cifar10. Please run train_tiny_record.py 
