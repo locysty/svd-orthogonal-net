@@ -10,7 +10,7 @@ So I try svd decomposition to force the weights to have to be orthogonalized:
 #weight is depthwise conv layer weight
 weight.requires_grad=False
 out_,in_,s1,s2 =weight.shape
-a=weight.reshape((self.groups,-1,(in_*s1*s2)))
+a=weight.reshape((self.groups,-1,(in_*s1*s2))) #self.groups is nn.Conv2D 'groups' param in pytorch
 a=a.transpose(1,2)
 u, s, vh = torch.linalg.svd(a, full_matrices=False)
 mat = u @ vh
