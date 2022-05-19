@@ -27,11 +27,11 @@ cifar10 test result:
 
 | Model size  | With SVDOrth  |  Optimizor | Seed A accuracy  | Seed B accuracy  |
 | ------------ | ------------ | ------------ | ------------ | ------------ |
-| small(175k)  | **yes**  |  SGD |  79.6 | 79.6|
+| small(175kb)  | **yes**  |  SGD |  79.6 | 79.6|
 | small | no | SGD | 80.5 | 79.9 |
 |small	|**yes**	|Adamw	|78.3|	78.6|
 |small|	no|	Adamw|	77.5|	76.7|
-|large(3.2m)|	**yes**|	SGD|	87.0|	86.8|
+|large(3.2mb)|	**yes**|	SGD|	87.0|	86.8|
 |large|	no|	SGD|	84.9|	85.3|
 |large|**yes** |	Adamw | 87.1|	87.1|
 |large|	no	|Adamw|	84.0|	84.3|
